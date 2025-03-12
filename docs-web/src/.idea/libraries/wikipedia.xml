@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="wikipedia">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/test/resources/file/wikipedia.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

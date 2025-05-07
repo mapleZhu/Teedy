@@ -18,8 +18,7 @@ DOCKER_IMAGE = 'mapleZhu/Teedy' // your Docker Hub user name and Repository's na
                     userRemoteConfigs: [[url: 'https://github.com/mapleZhu/Teedy.git']] 
 // your github Repository 
                 ) 
-                sh 
-'mvn -B -DskipTests clean package' 
+                sh 'mvn -B -DskipTests clean package' 
             } 
         } 
 // Building Docker images 

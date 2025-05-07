@@ -35,8 +35,7 @@ DOCKER_IMAGE = 'mapleZhu/teedy' // your Docker Hub user name and Repository's na
             steps { 
                 script { 
 // sign in Docker Hub 
-                    docker.withRegistry('https://registry.hub.docker.com', 
-'DOCKER_HUB_CREDENTIALS') { 
+                    docker.withRegistry('https://registry.hub.docker.com', 'DOCKER_HUB_CREDENTIALS') { 
 // push image 
 docker.image("${env.DOCKER_IMAGE}:${env.DOCKER_TAG}").push() 
 // ：optional: label latest 

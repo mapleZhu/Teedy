@@ -1,0 +1,115 @@
+<style>
+  /* 保持与登录页面相同的样式 */
+  .navbar {
+    display: none;
+  }
+  
+  .footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border: none;
+  }
+  
+  @media screen and (min-width: 768px) {
+    .footer {
+      width: 50%;
+    }
+  }
+  
+  a {
+    font-size: 90%;
+    color: #666;
+  }
+  
+  /* 注册页面特有样式 */
+  .password-hint {
+    font-size: 12px;
+    color: #999;
+    margin-top: -10px;
+    margin-bottom: 15px;
+  }
+  
+  .show-password {
+    cursor: pointer;
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    color: #666;
+  }
+</style>
+
+<div class="row vertical-center">
+  <div class="col-sm-6 col-xs-12 login-box">
+    <div class="row">
+      <div class="col-lg-offset-4 col-lg-4 col-xs-offset-1 col-xs-10">
+        <img src="img/title.png" class="img-responsive" />
+        
+        <form name="registerForm" novalidate>
+          <!-- 用户名 - 至少3位 -->
+          <div class="form-group">
+            <label class="sr-only" for="regUsername">用户名</label>
+            <input class="form-control" type="text" id="regUsername" name="username"
+                   placeholder="用户名" ng-model="user.username" 
+                   ng-minlength="3" required>
+            <div class="text-danger" ng-if="registerForm.username.$dirty && registerForm.username.$invalid">
+              <small ng-if="registerForm.username.$error.required">请输入用户名</small>
+              <small ng-if="registerForm.username.$error.minlength">用户名至少需要3位</small>
+            </div>
+          </div>
+          
+          <!-- 邮箱 - 保留邮箱格式验证 -->
+          <div class="form-group">
+            <label class="sr-only" for="regEmail">电子邮箱</label>
+            <input class="form-control" type="email" id="regEmail" name="email"
+                   placeholder="电子邮箱" ng-model="user.email" required>
+            <div class="text-danger" ng-if="registerForm.email.$dirty && registerForm.email.$invalid">
+              <small ng-if="registerForm.email.$error.required">请输入邮箱</small>
+              <small ng-if="registerForm.email.$error.email">邮箱格式不正确</small>
+            </div>
+          </div>
+          
+          <!-- 密码 - 至少8位 -->
+          <div class="form-group" style="position: relative;">
+            <label class="sr-only" for="regPassword">密码</label>
+            <input class="form-control" 
+                   id="regPassword" 
+                   name="password" 
+                   placeholder="密码" 
+                   ng-model="user.password" 
+                   ng-attr-type="{{showPassword ? 'text' : 'password'}}"
+                   ng-minlength="8" required>
+            <span class="show-password" 
+                  ng-click="showPassword = !showPassword" 
+                  ng-class="{'fa fa-eye': !showPassword, 'fa fa-eye-slash': showPassword}" 
+                  ng-attr-title="{{showPassword ? '隐藏密码' : '显示密码'}}">
+            </span>
+            <div class="text-danger" ng-if="registerForm.password.$dirty && registerForm.password.$invalid">
+              <small ng-if="registerForm.password.$error.required">请输入密码</small>
+              <small ng-if="registerForm.password.$error.minlength">密码至少需要8位</small>
+            </div>
+          </div>
+          
+          <!-- 注册按钮 - 在所有字段有效时启用 -->
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary btn-block" 
+                    ng-click="register()" 
+                    ng-disabled="registerForm.$invalid">
+              <span class="fas fa-user-plus"></span> 注册
+            </button>
+          </div>
+          
+          <!-- 已有账号链接 -->
+          <div class="text-center">
+            <span class="text-muted">已有账号？</span>
+            <a href ng-click="goToLogin()" class="btn btn-link">立即登录</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <div class="login-img-container col-sm-6 hidden-xs"></div>
+  <div class="alert" ng-if="success">注册申请已提交</div>
+</div>

@@ -122,6 +122,73 @@ public class UserResource extends BaseResource {
     }
 
     /**
+     * Submits a new user registration application (requires admin approval).
+     *
+     * @api {post} /user/register_application Submit a registration application
+     * @apiName PostRegisterApplication
+     * @apiGroup User
+     * @apiParam {String{3..50}} username Username
+     * @apiParam {String{8..50}} password Password
+     * @apiParam {String{1..100}} email E-mail
+     * @apiSuccess {String} status Status OK
+     * @apiError (client) ValidationError Validation error
+     * @apiError (client) AlreadyExistingUsername Username already exists
+     * @apiPermission none
+     * @apiVersion 1.5.0
+     *
+     * @param username Username
+     * @param password Password
+     * @param email E-Mail
+     * @return Response
+     */
+    @POST
+    @Path("register")
+    public Response registerApplication(
+        @FormParam("username") String username,
+        @FormParam("password") String password,
+        @FormParam("email") String email) {
+
+        // 1. 验证输入数据
+        username = ValidationUtil.validateLength(username, "username", 3, 50);
+        ValidationUtil.validateUsername(username, "username");
+        password = ValidationUtil.validateLength(password, "password", 8, 50);
+        email = ValidationUtil.validateLength(email, "email", 1, 100);
+        ValidationUtil.validateEmail(email, "email");
+
+        // 2. 检查用户名是否已存在
+        UserDao userDao = new UserDao();
+        // if (userDao.getInActiveByUsername(username) != null) {
+        //     throw new ClientException("AlreadyExistingUsername", "Username already exists");
+        // }
+        if (userDao.getActiveByUsername(username) != null) {
+            throw new ClientException("AlreadyExistingUsername", "Username already exists");
+        }
+
+        // 3. 创建用户，但立即禁用（disableDate = new Date()）
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(password); // UserDao.create() 会自动加密密码
+        user.setEmail(email);
+        user.setRoleId(Constants.DEFAULT_USER_ROLE);
+        user.setStorageQuota(10000000000L);
+        user.setOnboarding(true);
+        user.setStorageCurrent(0L);
+        user.setDisableDate(new Date()); // 关键点：禁用用户
+
+        try {
+            // 4. 调用 UserDao.create() 存储用户
+            userDao.create(user, "system"); // "system" 表示系统自动操作
+        } catch (Exception e) {
+            throw new ServerException("UserCreationError", "Error creating user", e);
+        }
+
+        JsonObjectBuilder response = Json.createObjectBuilder()
+                .add("status", "ok")
+                .add("message", "User registered but disabled. An admin will review your request.");
+        return Response.ok().entity(response.build()).build();
+    }
+
+    /**
      * Updates the current user informations.
      *
      * @api {post} /user Update the current user
@@ -718,6 +785,7 @@ public class UserResource extends BaseResource {
     public Response list(
             @QueryParam("sort_column") Integer sortColumn,
             @QueryParam("asc") Boolean asc,
+            @QueryParam("type") Integer type,
             @QueryParam("group") String groupName) {
         if (!authenticate()) {
             throw new ForbiddenClientException();
@@ -739,6 +807,11 @@ public class UserResource extends BaseResource {
         UserDao userDao = new UserDao();
         List<UserDto> userDtoList = userDao.findByCriteria(new UserCriteria().setGroupId(groupId), sortCriteria);
         for (UserDto userDto : userDtoList) {
+            if (type != null && type == 1) {
+                if (userDto.getDisableTimestamp() == null) {
+                    continue;
+                }
+            }
             users.add(Json.createObjectBuilder()
                     .add("id", userDto.getId())
                     .add("username", userDto.getUsername())

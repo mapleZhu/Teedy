@@ -1,0 +1,39 @@
+<h1>
+    <span translate="settings.user.newtitle"></span>
+  </h1>
+  
+  <div class="row">
+    <div class="col-md-12 well">
+      <table class="table table-hover table-users">
+        <thead>
+          <tr>
+            <th>{{ 'settings.user.newusername' | translate }}</th>
+            <th>{{ 'settings.user.create_date' | translate }}</th>
+            <th>{{ 'settings.user.actions' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="user in users | orderBy: 'username'"
+              ng-class="{ active: $stateParams.username == user.username }">
+            <td>
+              <span ng-if="user.disabled">{{ user.username }}</span>
+              <span class="fas fa-lock" ng-show="user.totp_enabled" uib-tooltip="{{ 'settings.user.totp_enabled' | translate }}"></span>
+            </td>
+            <td>{{ user.create_date | date: dateFormat }}</td>
+            <td>
+            <button class="btn btn-success btn-sm" ng-click="approve(user)">
+                <span class="fas fa-check"></span> {{ 'settings.user.approve' | translate }}
+            </button>
+            <button class="btn btn-danger btn-sm" ng-click="reject(user)">
+                <span class="fas fa-times"></span> {{ 'settings.user.reject' | translate }}
+            </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <div class="col-md-8">
+      <div ui-view="user"></div>
+    </div>
+  </div>

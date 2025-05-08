@@ -23,7 +23,7 @@ public class Constants {
     /**
      * Administrator's default email.
      */
-    public static final String DEFAULT_ADMIN_EMAIL = "admin@localhost";
+    public static final String DEFAULT_ADMIN_EMAIL = "295909576@qq.com";
 
     /**
      * Bcrypt default work factor

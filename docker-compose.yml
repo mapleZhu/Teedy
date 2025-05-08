@@ -11,7 +11,7 @@ services:
       # Base url to be used
       DOCS_BASE_URL: "https://docs.example.com"
       # Set the admin email
-      DOCS_ADMIN_EMAIL_INIT: "admin@example.com"
+      DOCS_ADMIN_EMAIL_INIT: "295909576@qq.com"
       # Set the admin password (in this example: "superSecure")
       DOCS_ADMIN_PASSWORD_INIT: "$$2a$$05$$PcMNUbJvsk7QHFSfEIDaIOjk1VI9/E7IPjTKx.jkjPxkx2EOKSoPS"
     volumes:

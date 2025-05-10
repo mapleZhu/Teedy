@@ -736,3 +736,43 @@ org.hibernate.PropertyValueException: not-null property references a null or tra
 08 May 2025 16:43:41,093 INFO com.sismics.util.ClasspathScanner.findClasses(ClasspathScanner.java:48) Found 2 classes for AuthenticationHandler 
 08 May 2025 16:44:03,860 INFO com.sismics.docs.core.service.InboxService.shutDown(InboxService.java:57) Inbox service shutting down 
 08 May 2025 16:44:03,861 INFO com.sismics.docs.core.service.FileService.shutDown(FileService.java:44) File service shutting down 
+10 May 2025 13:17:56,780 INFO com.sismics.util.jpa.EMF.getEntityManagerProperties(EMF.java:67) Configuring EntityManager from hibernate.properties 
+10 May 2025 13:18:00,223 INFO com.sismics.util.jpa.DbOpenHelper.open(DbOpenHelper.java:57) Opening database and executing incremental updates 
+10 May 2025 13:18:00,241 INFO com.sismics.util.jpa.DbOpenHelper.open(DbOpenHelper.java:106) Found database version 31, new version is 31, executing database incremental update scripts 
+10 May 2025 13:18:00,242 INFO com.sismics.util.jpa.DbOpenHelper.open(DbOpenHelper.java:108) Database upgrade complete 
+10 May 2025 13:18:00,245 INFO com.sismics.util.jpa.EMF.getEntityManagerProperties(EMF.java:67) Configuring EntityManager from hibernate.properties 
+10 May 2025 13:18:06,060 INFO com.sismics.util.ClasspathScanner.findClasses(ClasspathScanner.java:48) Found 1 classes for IndexingHandler 
+10 May 2025 13:18:06,343 INFO com.sismics.docs.core.util.indexing.LuceneIndexingHandler.initLucene(LuceneIndexingHandler.java:129) Using RAM Lucene storage 
+10 May 2025 13:18:06,925 INFO com.sismics.docs.core.service.FileService.startUp(FileService.java:39) File service starting up 
+10 May 2025 13:18:06,954 INFO com.sismics.docs.core.service.InboxService.startUp(InboxService.java:52) Inbox service starting up 
+10 May 2025 13:18:06,965 INFO com.sismics.docs.core.service.FileSizeService.startUp(FileSizeService.java:30) File size service starting up 
+10 May 2025 13:18:08,026 INFO com.sismics.docs.core.service.FileSizeService.lambda$runOneIteration$0(FileSizeService.java:50) No more file to process, stopping the service 
+10 May 2025 13:18:08,033 INFO com.sismics.docs.core.service.FileSizeService.shutDown(FileSizeService.java:35) File size service shutting down 
+10 May 2025 13:18:42,387 INFO com.sismics.util.ClasspathScanner.findClasses(ClasspathScanner.java:48) Found 2 classes for AuthenticationHandler 
+10 May 2025 13:18:54,197 INFO com.sismics.docs.core.util.FileUtil.startProcessingFile(FileUtil.java:225) Processing started for file: eb229a8b-e2b4-45f2-b08e-ca346d89c698 
+10 May 2025 13:18:54,211 INFO com.sismics.docs.core.listener.async.FileProcessingAsyncListener.on(FileProcessingAsyncListener.java:67) File updated event: FileUpdatedAsyncEvent{fileId=eb229a8b-e2b4-45f2-b08e-ca346d89c698, language=eng} 
+10 May 2025 13:18:54,505 INFO com.sismics.util.ClasspathScanner.findClasses(ClasspathScanner.java:48) Found 7 classes for FormatHandler 
+10 May 2025 13:18:55,763 INFO com.sismics.docs.core.listener.async.FileProcessingAsyncListener.extractContent(FileProcessingAsyncListener.java:176) Start extracting content from: File{id=eb229a8b-e2b4-45f2-b08e-ca346d89c698, name=assignment3.pdf} 
+10 May 2025 13:18:55,944 INFO com.sismics.docs.core.listener.async.FileProcessingAsyncListener.extractContent(FileProcessingAsyncListener.java:182) File content extracted in 181ms: eb229a8b-e2b4-45f2-b08e-ca346d89c698 
+10 May 2025 13:18:56,637 INFO com.sismics.docs.core.util.FileUtil.endProcessingFile(FileUtil.java:235) Processing ended for file: eb229a8b-e2b4-45f2-b08e-ca346d89c698 
+10 May 2025 13:33:31,368 INFO com.sismics.docs.core.util.FileUtil.startProcessingFile(FileUtil.java:225) Processing started for file: a491d8ff-264f-47e1-ace8-1d8cc216f91a 
+10 May 2025 13:33:31,389 INFO com.sismics.docs.core.listener.async.FileProcessingAsyncListener.on(FileProcessingAsyncListener.java:53) File created event: FileCreatedAsyncEvent{fileId=a491d8ff-264f-47e1-ace8-1d8cc216f91a, language=eng} 
+10 May 2025 13:33:31,389 INFO com.sismics.docs.core.listener.async.DocumentUpdatedAsyncListener.on(DocumentUpdatedAsyncListener.java:39) Document updated event: DocumentUpdatedAsyncEvent{documentId=155037a6-9944-48e0-a5ec-67721dd44690} 
+10 May 2025 13:33:31,755 INFO com.sismics.docs.core.listener.async.FileProcessingAsyncListener.extractContent(FileProcessingAsyncListener.java:176) Start extracting content from: File{id=a491d8ff-264f-47e1-ace8-1d8cc216f91a, name=Research Proposal.pdf} 
+10 May 2025 13:33:31,764 INFO com.sismics.docs.core.listener.async.FileProcessingAsyncListener.extractContent(FileProcessingAsyncListener.java:182) File content extracted in 9ms: a491d8ff-264f-47e1-ace8-1d8cc216f91a 
+10 May 2025 13:33:31,775 INFO com.sismics.docs.core.util.FileUtil.endProcessingFile(FileUtil.java:235) Processing ended for file: a491d8ff-264f-47e1-ace8-1d8cc216f91a 
+10 May 2025 13:59:45,102 INFO com.sismics.docs.core.service.InboxService.shutDown(InboxService.java:57) Inbox service shutting down 
+10 May 2025 13:59:45,103 INFO com.sismics.docs.core.service.FileService.shutDown(FileService.java:44) File service shutting down 
+10 May 2025 13:59:54,726 INFO com.sismics.util.jpa.EMF.getEntityManagerProperties(EMF.java:67) Configuring EntityManager from hibernate.properties 
+10 May 2025 13:59:57,419 INFO com.sismics.util.jpa.DbOpenHelper.open(DbOpenHelper.java:57) Opening database and executing incremental updates 
+10 May 2025 13:59:57,442 INFO com.sismics.util.jpa.DbOpenHelper.open(DbOpenHelper.java:106) Found database version 31, new version is 31, executing database incremental update scripts 
+10 May 2025 13:59:57,443 INFO com.sismics.util.jpa.DbOpenHelper.open(DbOpenHelper.java:108) Database upgrade complete 
+10 May 2025 13:59:57,445 INFO com.sismics.util.jpa.EMF.getEntityManagerProperties(EMF.java:67) Configuring EntityManager from hibernate.properties 
+10 May 2025 14:00:05,342 INFO com.sismics.util.ClasspathScanner.findClasses(ClasspathScanner.java:48) Found 1 classes for IndexingHandler 
+10 May 2025 14:00:05,639 INFO com.sismics.docs.core.util.indexing.LuceneIndexingHandler.initLucene(LuceneIndexingHandler.java:129) Using RAM Lucene storage 
+10 May 2025 14:00:06,184 INFO com.sismics.docs.core.service.FileService.startUp(FileService.java:39) File service starting up 
+10 May 2025 14:00:06,214 INFO com.sismics.docs.core.service.InboxService.startUp(InboxService.java:52) Inbox service starting up 
+10 May 2025 14:00:06,220 INFO com.sismics.docs.core.service.FileSizeService.startUp(FileSizeService.java:30) File size service starting up 
+10 May 2025 14:00:07,358 INFO com.sismics.docs.core.service.FileSizeService.lambda$runOneIteration$0(FileSizeService.java:50) No more file to process, stopping the service 
+10 May 2025 14:00:07,366 INFO com.sismics.docs.core.service.FileSizeService.shutDown(FileSizeService.java:35) File size service shutting down 
+10 May 2025 14:01:02,942 INFO com.sismics.util.ClasspathScanner.findClasses(ClasspathScanner.java:48) Found 2 classes for AuthenticationHandler 

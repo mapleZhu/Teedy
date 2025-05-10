@@ -10,6 +10,7 @@ angular.module('docs').controller('FileView', function($uibModal, $state, $state
     controller: 'FileModalView',
     size: 'lg'
   });
+  
 
   // Returns to document view on file close
   modal.closed = false;

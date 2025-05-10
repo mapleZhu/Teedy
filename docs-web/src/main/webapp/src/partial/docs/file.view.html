@@ -22,6 +22,13 @@
   </div>
   
   <div class="btn-group pull-right">
+    <button type="button" class="btn btn-default" ng-click="translateDocument()" ng-disabled="isTranslating">
+      <span class="fas fa-language"></span>
+      {{ isTranslating ? ('translating' | translate) : ('translate' | translate) }}
+    </button>
+    <button class="btn btn-default" ng-click="toggleTranslation()" ng-if="translatedContent">
+      {{ showOriginal ? ('show_translation' | translate) : ('show_original' | translate) }}
+    </button>
     <button type="button" class="btn btn-default" uib-tooltip="Print this file" tooltip-append-to-body="true" ng-click="printFile()">
       <span class="fas fa-print"></span>
     </button>
@@ -35,11 +42,22 @@
 </div>
 
 <div class="text-center" style="position: relative;" ng-if="$stateParams.fileId">
-  <!-- Standard preview -->
-  <img ng-src="../api/file/{{ $stateParams.fileId }}/data?size=web"
-       ng-init="error = false"
-       img-error="error = true"
-       ng-show="!error && canDisplayPreview()" />
+
+  <!-- 翻译内容显示 -->
+  <div class="well" ng-if="translatedContent && !showOriginal">
+    <div ng-bind-html="translatedContent"></div>
+    <div class="text-muted small" style="margin-top: 10px;">
+      {{ 'translated_from' | translate }}: {{ file.mimetype }}
+    </div>
+  </div>
+  
+  <!-- 原始内容显示 -->
+  <div ng-if="showOriginal || !translatedContent">
+    <!-- Standard preview -->
+    <img ng-src="../api/file/{{ $stateParams.fileId }}/data?size=web"
+         ng-init="error = false"
+         img-error="error = true"
+         ng-show="!error && canDisplayPreview()" />
 
   <!-- Media player -->
   <a href class="video-overlay" ng-if="!error && (file.mimetype.substring(0, 6) == 'video/' || file.mimetype.substring(0, 6) == 'audio/')"
@@ -57,4 +75,10 @@
     <span class="fas fa-exclamation-triangle"></span>
     {{ 'file.view.not_found' | translate }}
   </p>
+
+  <div class="text-center" ng-if="isTranslating">
+    <span class="fas fa-spinner fa-spin"></span>
+    {{ 'translating_in_progress' | translate }}
+  </div>
+  
 </div>

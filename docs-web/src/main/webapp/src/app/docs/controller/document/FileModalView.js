@@ -123,4 +123,60 @@ angular.module('docs').controller('FileModalView', function ($uibModalInstance, 
   $scope.canDisplayPreview = function () {
     return $scope.file && $scope.file.mimetype !== 'application/pdf';
   };
+
+  /**
+   * Translate the current document content.
+   */
+  $scope.translateDocument = function() {
+    // 检查是否已经加载文件
+    if (!$scope.file) {
+      console.error('No file loaded to translate');
+      return;
+    }
+
+    // 显示加载状态
+    $scope.isTranslating = true;
+    $scope.translationError = null;
+
+    // 获取当前界面语言
+    var targetLanguage = $translate.use() || 'en'; // 默认英语
+    
+    // 调用翻译API
+    Restangular.one('file', $stateParams.fileId).one('translate').post({
+      targetLanguage: targetLanguage
+    }).then(function(response) {
+      // 成功回调
+      $scope.translatedContent = response.translatedText;
+      $scope.isTranslating = false;
+      
+      // 将翻译内容显示在模态框中
+      $scope.showOriginal = false; // 标记当前显示翻译内容
+      
+    }, function(error) {
+      // 错误处理
+      console.error('Translation failed:', error);
+      $scope.isTranslating = false;
+      $scope.translationError = $translate.instant('document.translation_failed');
+      
+      // 显示错误提示
+      $uibModal.open({
+        templateUrl: 'partial/docs/modal-error.html',
+        controller: 'ModalErrorCtrl',
+        size: 'sm',
+        resolve: {
+          errorMessage: function() {
+            return $scope.translationError;
+          }
+        }
+      });
+    });
+  };
+
+  /**
+   * Toggle between original and translated content
+   */
+  $scope.toggleTranslation = function() {
+    $scope.showOriginal = !$scope.showOriginal;
+  };
+
 });

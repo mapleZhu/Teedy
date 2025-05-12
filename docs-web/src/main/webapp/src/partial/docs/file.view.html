@@ -1,3 +1,56 @@
+<style>
+.translated-from {
+  position: absolute;
+  bottom: 5px; 
+  left: 10px; 
+  right: 10px; 
+  text-align: left;
+}
+.translation-container {
+  background-color: #efecec; /* 深色背景 */
+  height: 550px;
+  display: flex;
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+}
+.translation-content {
+    padding: 20px;
+    height: 500px;
+    overflow-y: auto;
+    background: white;
+    line-height: 1.6;
+    font-size: 14px;
+    overflow-y: auto;
+    text-align: left;
+  }
+.fa-spinner {
+  margin: 20px;
+  color: #337ab7;
+}
+.translation-wrapper {
+  background-color: white; /* 白色背景 */
+  width: 50%; /* 设置宽度为视口宽度的 60% */
+  max-width: 800px; /* 最大宽度 */
+  height: 95%; /* 设置高度为视口高度的 80% */
+  border: 1px solid #e0e0e0; /* 边框 */
+  overflow: hidden; /* 隐藏溢出内容 */
+}
+.translation-content p {
+    margin-bottom: 1em;
+  }
+  
+  .translation-content ul, 
+  .translation-content ol {
+    margin: 1em 0;
+    padding-left: 2em;
+  }
+  
+  .translation-content h1, 
+  .translation-content h2, 
+  .translation-content h3 {
+    margin: 1.2em 0 0.8em;
+  }
+</style>
 <div class="text-center">
   <div class="btn-group pull-left">
     <button type="button" class="btn btn-default" ng-click="closeFile()">
@@ -24,10 +77,9 @@
   <div class="btn-group pull-right">
     <button type="button" class="btn btn-default" ng-click="translateDocument()" ng-disabled="isTranslating">
       <span class="fas fa-language"></span>
-      {{ isTranslating ? ('translating' | translate) : ('translate' | translate) }}
     </button>
     <button class="btn btn-default" ng-click="toggleTranslation()" ng-if="translatedContent">
-      {{ showOriginal ? ('show_translation' | translate) : ('show_original' | translate) }}
+      {{ showOriginal ? ('显示译文' | translate) : ('显示原文' | translate) }}
     </button>
     <button type="button" class="btn btn-default" uib-tooltip="Print this file" tooltip-append-to-body="true" ng-click="printFile()">
       <span class="fas fa-print"></span>
@@ -44,11 +96,10 @@
 <div class="text-center" style="position: relative;" ng-if="$stateParams.fileId">
 
   <!-- 翻译内容显示 -->
-  <div class="well" ng-if="translatedContent && !showOriginal">
-    <div ng-bind-html="translatedContent"></div>
-    <div class="text-muted small" style="margin-top: 10px;">
-      {{ 'translated_from' | translate }}: {{ file.mimetype }}
-    </div>
+  <div class="translation-container" ng-if="translatedContent && !showOriginal">
+  <div class="translation-wrapper" ng-if="translatedContent && !showOriginal">
+    <div class="translation-content" ng-bind-html="translatedContent"></div>
+  </div>
   </div>
   
   <!-- 原始内容显示 -->

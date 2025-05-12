@@ -5859,17 +5859,3 @@ button.close {
     display: none !important;
   }
 }
-.translated-content {
-  max-height: 70vh;
-  overflow-y: auto;
-  padding: 15px;
-}
-.file-preview-frame {
-  width: 100%;
-  height: 70vh;
-  border: none;
-}
-.fa-spinner {
-  margin: 20px;
-  color: #337ab7;
-}

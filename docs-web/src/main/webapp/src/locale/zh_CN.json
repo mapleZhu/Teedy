@@ -184,7 +184,11 @@
     "view": {
       "previous": "上一个",
       "next": "下一个",
-      "not_found": "文件未找到"
+      "not_found": "文件未找到",
+      "translating": "已翻译",
+      "translate": "翻译",
+      "show_translation": "显示翻译",
+      "show_original": "显示原文"
     }
   },
   "tag": {

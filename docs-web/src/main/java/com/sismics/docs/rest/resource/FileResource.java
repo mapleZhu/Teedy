@@ -32,15 +32,19 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import jakarta.json.Json;
 import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonObject;
 import jakarta.json.JsonObjectBuilder;
+import jakarta.json.JsonReader;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.core.StreamingOutput;
+
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -48,9 +52,27 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.util.Base64;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import java.util.Locale;
+import java.util.TimeZone;
+import java.util.Date;
+
+import org.apache.commons.codec.digest.HmacUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+import org.apache.http.client.methods.CloseableHttpResponse;
 
 /**
  * File REST resources.
@@ -139,6 +161,112 @@ public class FileResource extends BaseResource {
             throw new ClientException(e.getMessage(), e.getMessage(), e);
         } catch (Exception e) {
             throw new ServerException("FileError", "Error adding a file", e);
+        }
+    }
+
+    @POST
+    @Path("{id: [a-z0-9\\-]+}/translate")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response translate(
+        @PathParam("id") String id,
+        JsonObject requestBody) {
+        
+        // 从JSON中获取参数
+        String targetLanguage = requestBody.getString("targetLanguage");
+        
+        if (!authenticate()) {
+            throw new ForbiddenClientException();
+        }
+
+        // 验证输入
+        ValidationUtil.validateRequired(targetLanguage, "targetLanguage");
+
+        // 获取文件
+        File file = findFile(id, null);
+        if (file == null || file.getContent() == null) {
+            throw new NotFoundException("File not found or content is empty");
+        }
+
+        try {
+            // 1. 准备请求参数
+            String apiKey = "346ddf0c87e172f2f96533d36070519c";
+            String apiSecret = "MzQ1ODRhNWU3Y2UxNWMxZmRlYmM0M2Q4";
+            String appId = "02735dbb";
+            String endpoint = "https://ntrans.xfyun.cn/v2/ots";
+
+            // 2. 生成鉴权参数
+            SimpleDateFormat rfc1123Formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
+            rfc1123Formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
+            String date = rfc1123Formatter.format(new Date());
+            
+            // 修正签名原始字符串，匹配ntrans接口要求
+            String signatureOrigin = String.format(
+                    "host: ntrans.xfyun.cn\ndate: %s\nPOST /v2/ots HTTP/1.1",
+                    date
+            );
+            
+            String signatureSha = Base64.getEncoder().encodeToString(
+                    HmacUtils.hmacSha256(apiSecret, signatureOrigin)
+            );
+            
+            // 修正授权头
+            String authorization = String.format(
+                    "api_key=\"%s\", algorithm=\"hmac-sha256\", headers=\"host date request-line\", signature=\"%s\"",
+                    apiKey, signatureSha
+            );
+
+            // 3. 构建请求体 - 根据ntrans接口文档调整
+            String textBase64 = Base64.getEncoder().encodeToString(file.getContent().getBytes(StandardCharsets.UTF_8));
+            JsonObject apiRequestBody = Json.createObjectBuilder()
+                    .add("common", Json.createObjectBuilder()
+                            .add("app_id", appId))
+                    .add("business", Json.createObjectBuilder()
+                            .add("from", "auto")
+                            .add("to", targetLanguage))
+                    .add("data", Json.createObjectBuilder()
+                            .add("text", textBase64))
+                    .build();
+
+            // 4. 发送请求
+            CloseableHttpClient httpClient = HttpClients.createDefault();
+            HttpPost request = new HttpPost(endpoint);
+            request.setHeader("Authorization", authorization);
+            request.setHeader("Date", date);
+            request.setHeader("Host", "ntrans.xfyun.cn");
+            request.setHeader("Content-Type", "application/json");
+            request.setEntity(new StringEntity(apiRequestBody.toString(), ContentType.APPLICATION_JSON));
+
+            CloseableHttpResponse response = httpClient.execute(request);
+
+            // 5. 处理响应
+            try {
+                int statusCode = response.getStatusLine().getStatusCode();
+                if (statusCode >= 200 && statusCode < 300) {
+                    String responseBody = EntityUtils.toString(response.getEntity());
+                    JsonObject jsonResponse = Json.createReader(new StringReader(responseBody)).readObject();
+                    
+                    JsonObject resultObject = jsonResponse.getJsonObject("data").getJsonObject("result");
+                    System.out.println("Result object: " + resultObject);
+                    // 根据ntrans接口响应结构调整
+                    JsonObject transResult = resultObject.getJsonObject("trans_result"); // 获取 "trans_result" 对象
+                    String translatedText = transResult.getString("dst"); // 提取 "dst" 字段的值
+                    translatedText = translatedText.replace("\n", "<br>");
+
+                    JsonObject result = Json.createObjectBuilder()
+                            .add("translatedText", translatedText)
+                            .build();
+
+                    return Response.ok().entity(result).build();
+                } else {
+                    throw new IOException("Translation API error: " + EntityUtils.toString(response.getEntity()));
+                }
+            } finally {
+                response.close();
+                httpClient.close();
+            }
+        } catch (Exception e) {
+            throw new ServerException("TranslationError", "Error during translation", e);
         }
     }
     

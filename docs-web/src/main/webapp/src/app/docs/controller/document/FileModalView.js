@@ -124,14 +124,19 @@ angular.module('docs').controller('FileModalView', function ($uibModalInstance, 
     return $scope.file && $scope.file.mimetype !== 'application/pdf';
   };
 
+  $scope.selectedLanguage = 'en';
   $scope.isTranslating = false;
   $scope.translatedContent = null;
   $scope.showOriginal = true;
   
   $scope.translateDocument = function () {
+    if (!$scope.selectedLanguage) {
+      console.error('No target language selected');
+      return;
+    }
     $scope.isTranslating = true;
     $http.post(`../api/file/${$stateParams.fileId}/translate`, 
-    JSON.stringify({ targetLanguage: 'en' }),  // 关键修改：手动转为JSON字符串
+    JSON.stringify({ targetLanguage: $scope.selectedLanguage }),  // 关键修改：手动转为JSON字符串
     { 
       headers: { 
         'Content-Type': 'application/json',

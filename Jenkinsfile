@@ -3,7 +3,7 @@ pipeline {
     environment {
         DEPLOYMENT_NAME = "hello-node"
         CONTAINER_NAME = "docs"
-        IMAGE_NAME = "sismics/docs:v1.11
+        IMAGE_NAME = "sismics/docs:v1.11"
     }
     stages {
         stage('Start Minikube') {
@@ -22,7 +22,7 @@ pipeline {
             steps {
                 sh '''
                     echo "Setting image for deployment..."
-                    kubectl set image deployment/${DEPLOYMENT_NAME} ${CONTAINER_NAME}=${IMAGE_N
+                    kubectl set image deployment/${DEPLOYMENT_NAME} ${CONTAINER_NAME}=${IMAGE_NAME}
                 '''
             }
         }
